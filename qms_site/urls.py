@@ -7,6 +7,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('', views.login_page, name='login'),
+    path('logout/', views.logout_page, name='logout'),
     path('qms_app/',include('qms_app.urls')),
 ]
 
