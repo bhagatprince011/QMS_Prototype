@@ -46,12 +46,13 @@
                 <!-- Dropdown for selecting login role -->
                 <div class="mb-3">
                     <label for="role" class="form-label">Login as: <span class="text-danger">*</span></label>
-                    <select id="role" class="form-control form-select" onchange="toggleLoginButton()">
+                    <select id="role" name="role" class="form-control form-select" onchange="toggleLoginButton()">
                         <option value="">Select Role </option>
                         <option value="Contractor">Contractor</option>
                         <option value="Engineer">Engineer</option>
                         <option value="Administrator">Administrator</option>
                     </select>
+
                 </div>
                 
                 <!-- Username Input -->

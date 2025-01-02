@@ -3,8 +3,45 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<div class="text-center">
-    <h2>Welcome to the Home Page</h2>
-    <p>This is your home content!</p>
-</div>
+
+    <div class="text-center">
+        <h2>Welcome{% if name %}, {{ name }}{% endif %}!</h2>
+        <p>This is your home content!</p>
+    </div>
+
+    <h2>Roads List</h2>
+
+    {% if user_roads %}
+        <p>Showing roads for role: <strong>{{ role }}</strong><strong>( {{name}} )</strong></p>
+        <table class="table table-success table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Sr. No.</th>
+                    <th scope="col">Road Name</th>
+                    <th scope="col">Source</th>
+                    <th scope="col">Destination</th>
+                    <th scope="col">Road Type</th>
+                    <th scope="col">Milestone</th>
+                    <th scope="col">Contractor</th>
+                    <th scope="col">Engineer</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for road in user_roads %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td> <!-- Serial Number -->
+                        <td>{{ road.name }}</td>
+                        <td>{{ road.source }}</td>
+                        <td>{{ road.destination }}</td>
+                        <td>{% if road.road_type %}{{ road.road_type.name }}{% else %}N/A{% endif %}</td>
+                        <td>{% if road.milestone %}{{ road.milestone.name }}{% else %}N/A{% endif %}</td>
+                        <td>{{ road.contractor.first_name }} {{ road.contractor.last_name }}</td>
+                        <td>{{ road.engineer.first_name }} {{ road.engineer.last_name }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No roads available for your role{% if role %}: <strong>{{ role }}</strong>{% endif %}.</p>
+    {% endif %}
 {% endblock %}

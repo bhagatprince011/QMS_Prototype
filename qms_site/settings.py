@@ -41,7 +41,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'qms_app',
 ]
+
+AUTH_USER_MODEL = 'qms_app.Users'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
