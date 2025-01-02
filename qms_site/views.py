@@ -31,7 +31,7 @@ def login_page(request):
                 messages.error(request, 'Invalid username or password.')
                     
         context = {}
-        return render(request, 'login.html', context)
+        return render(request, 'Login.html', context)
     
     
 
