@@ -34,3 +34,7 @@ admin.site.register(Roles, RolesAdmin)
 admin.site.register(Milestones, MilestonesAdmin)
 admin.site.register(RoadTypes, RoadTypesAdmin)
 admin.site.register(Roads, RoadsAdmin)
+
+admin.site.site_header = "QMS Admin Portal"  # Change the header text
+admin.site.site_title = "QMS Administration"  # Title in browser tab
+admin.site.index_title = "Welcome to the QMS Admin Dashboard" 
