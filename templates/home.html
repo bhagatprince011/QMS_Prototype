@@ -13,21 +13,22 @@
 
     {% if user_roads %}
         <p>Showing roads for role: <strong>{{ role }}</strong><strong>( {{name}} )</strong></p>
-        <table class="table table-success table-hover">
-            <thead>
-                <tr>
-                    <th scope="col">Sr. No.</th>
-                    <th scope="col">Road Name</th>
-                    <th scope="col">Source</th>
-                    <th scope="col">Destination</th>
-                    <th scope="col">Road Type</th>
-                    <th scope="col">Milestone</th>
-                    <th scope="col">Contractor</th>
-                    <th scope="col">Engineer</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for road in user_roads %}
+        <div class="table-responsive">
+            <table class="table table-success table-striped-columns">
+                <thead>
+                    <tr>
+                        <th scope="col">Sr. No.</th>
+                        <th scope="col">Road Name</th>
+                        <th scope="col">Source</th>
+                        <th scope="col">Destination</th>
+                        <th scope="col">Road Type</th>
+                        <th scope="col">Milestone</th>
+                        <th scope="col">Contractor</th>
+                        <th scope="col">Engineer</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for road in user_roads %}
                     <tr>
                         <td>{{ forloop.counter }}</td> <!-- Serial Number -->
                         <td>{{ road.name }}</td>
@@ -38,9 +39,11 @@
                         <td>{{ road.contractor.first_name }} {{ road.contractor.last_name }}</td>
                         <td>{{ road.engineer.first_name }} {{ road.engineer.last_name }}</td>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
     {% else %}
         <p>No roads available for your role{% if role %}: <strong>{{ role }}</strong>{% endif %}.</p>
     {% endif %}
