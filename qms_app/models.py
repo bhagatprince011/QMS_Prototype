@@ -95,7 +95,9 @@ class Roads(models.Model):
     road_type = models.ForeignKey(RoadTypes, on_delete=models.CASCADE, related_name="roads")
     contractor = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="contracted_roads")
     engineer = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="engineered_roads")
-    milestone = models.ForeignKey(Milestones, on_delete=models.CASCADE, related_name="roads")
+    milestone = models.ForeignKey(Milestones, on_delete=models.CASCADE, related_name="roads",null=True, blank=True)
+    isUploadedProof = models.BooleanField(default=False)
+    engineerMessage = models.TextField(blank=True, null=True)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
 

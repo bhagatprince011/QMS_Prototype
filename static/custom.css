@@ -10,3 +10,46 @@ body {
 main {
     flex: 1; /* Takes up the available space */
 }
+
+.arrow-container {
+    display: flex;
+    gap: 10px; /* Space between the arrows */
+}
+
+.arrow {
+    width: 100px; /* Width of each arrow */
+    height: 50px; /* Height of each arrow */
+    background-color: gray;
+    clip-path: polygon(0% 0%, 80% 0%, 100% 50%, 80% 100%, 0% 100%, 20% 50%);
+    display: flex;
+    justify-content: center; /* Centers text horizontally */
+    align-items: center; /* Centers text vertically */
+    color: white; /* Text color */
+    font-weight: bold; /* Bold text */
+}
+
+.arrow-container .arrow {
+    padding: 10px 20px;
+    margin-right: 5px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    transition: all 0.3s ease; /* Smooth transitions */
+}
+
+.arrow.bg-success {
+    background-color: #198754;
+}
+
+.arrow.bg-warning {
+    background-color: #ffc107;
+}
+
+.arrow:hover {
+    transform: scale(1.1); /* Slightly enlarge on hover */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+  
+  
