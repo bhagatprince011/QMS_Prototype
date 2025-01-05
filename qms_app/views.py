@@ -56,10 +56,9 @@ def contractor(request, road_id):
         {"id": 2, "name": "M10"},
         {"id": 1, "name": "M11"},
     ]
-    if road.milestone == None:
-        roadstart = True
+   
 
-    return render(request, 'contractorView.html', {'road': road, 'milestones': milestones, 'roadstart': roadstart})
+    return render(request, 'contractorView.html', {'road': road, 'milestones': milestones})
 
 
 @csrf_exempt
