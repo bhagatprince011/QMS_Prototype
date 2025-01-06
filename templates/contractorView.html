@@ -5,92 +5,108 @@
 
 {% block content %}
 
-    <div class="container mb-5 p-5">
-        <div class="arrow-container">
-            {% for milestone in milestones %}
-                <div 
-                    class="arrow 
-                        {% if milestone.id == 11 and road.milestone.id == none %}bg-warning
-                        {% elif milestone.id > road.milestone.id %}bg-success
-                        {% elif milestone.id == road.milestone.id %}bg-success
-                        {% elif milestone.id == road.milestone.id|add:'-1' %}bg-warning
-                        {% endif %}"
-                >
-                    {{ milestone.name }}
+<div class="container mb-5 p-5">
+    <div class="arrow-container">
+        {% for milestone in milestones %}
+            <div 
+                class="arrow 
+                    {% if milestone.id == 11 and road.milestone.id == none %}bg-warning
+                    {% elif milestone.id > road.milestone.id %}bg-success
+                    {% elif milestone.id == road.milestone.id %}bg-success
+                    {% elif milestone.id == road.milestone.id|add:'-1' %}bg-warning
+                    {% endif %}">
+                {{ milestone.name }}
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="container mt-5 p-3">
+    <div class="row d-flex align-items-stretch">
+        <!-- Left Column: Road Details -->
+        <div class="col-sm-6 mb-3 mb-sm-0">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h2 class="card-title mb-5 text-primary">{{ road.name }}</h2>
+                    <p><strong>Road Type:</strong> <span class="badge bg-primary">{{ road.road_type.name }}</span></p>
+                    <p>
+                        <strong>Source &rarr; Destination:</strong> 
+                        <span class="badge bg-warning">{{ road.source }}</span>
+                        <i class="fas fa-arrow-right"></i>
+                        <span class="badge bg-success">{{ road.destination }}</span>
+                    </p>
+                    <p><strong>Milestone:</strong> <span class="badge bg-success">{{ road.milestone.name }}</span></p>
+                    <p><strong>Contractor:</strong> 
+                        <span class="badge bg-info">{{ road.contractor.first_name }} {{ road.contractor.last_name }}</span>
+                    </p>
+                    <p><strong>Engineer:</strong> 
+                        <span class="badge bg-info">{{ road.engineer.first_name }} {{ road.engineer.last_name }}</span>
+                    </p>
                 </div>
-            {% endfor %}
+            </div>
+        </div>
+    
+        <!-- Right Column: Interactive Options -->
+        <div class="col-sm-6">
+            <div class="card h-100">
+                <div class="card-body">
+                    <!-- Download Button -->
+                    <div class="d-grid gap-2 mb-3">
+                      <a href="{% url 'download_sample' %}" class="btn btn-outline-primary" aria-label="Download Project Form">Download Sample</a>
+                    </div>
+        
+                    <!-- Remarks -->
+                    <div class="form-floating mb-3">
+                        <textarea class="form-control" placeholder="" id="remarksTextarea" style="height: 100px" disabled aria-label="Remarks (if any)">
+                            {{ road.remarks }}</textarea>
+                        <label for="remarksTextarea">Remarks From Engineer (if any)</label>
+                    </div>
+        
+                    <!-- File Upload -->
+                    <div class="mb-3">
+                      <form class="form-control" id="uploadForm" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <label for="formFile" class="form-label">Upload Proofs</label>
+                        <input
+                            class="form-control mb-3"
+                            type="file"
+                            id="formFile"
+                            name="files"  
+                            accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp"
+                            multiple
+                            required
+                            aria-label="Upload Project Documents"
+                        >
+                        <button id="uploadButton" type="submit" class="btn btn-primary">Upload</button>
+                      </form>                    
+                    
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+</div>
 
-    <div class="container mt-5 p-3">
-        <div class="row d-flex align-items-stretch">
-          <!-- Left Column: Road Details -->
-          <div class="col-sm-6 mb-3 mb-sm-0">
-            <div class="card h-100">
-              <div class="card-body">
-                <h2 class="card-title mb-5 text-primary">{{ road.name }}</h2>
-                <p><strong>Road Type:</strong> <span class="badge bg-primary">{{ road.road_type.name }}</span></p>
-                <p>
-                  <strong>Source &rarr; Destination:</strong> 
-                  <span class="badge bg-warning">{{ road.source }}</span>
-                  <i class="fas fa-arrow-right"></i>
-                  <span class="badge bg-success">{{ road.destination }}</span>
-                </p>
-                <p><strong>Milestone:</strong> <span class="badge bg-success">{{ road.milestone.name }}</span></p>
-                <p><strong>Contractor:</strong> 
-                  <span class="badge bg-info">{{ road.contractor.first_name }} {{ road.contractor.last_name }}</span>
-                </p>
-                <p><strong>Engineer:</strong> 
-                  <span class="badge bg-info">{{ road.engineer.first_name }} {{ road.engineer.last_name }}</span>
-                </p>
-              </div>
-            </div>
-          </div>
-      
-          <!-- Right Column: Interactive Options -->
-          <div class="col-sm-6">
-            <div class="card h-100">
-              <div class="card-body">
-                <!-- Download Button -->
-                <div class="d-grid gap-2 mb-3">
-                  <button class="btn btn-outline-primary" type="button" aria-label="Download Project Form">Download Sample</button>
-                </div>
-      
-                <!-- Remarks -->
-                <div class="form-floating mb-3">
-                  <textarea class="form-control" placeholder="" id="remarksTextarea" style="height: 100px" disabled aria-label="Remarks (if any)">
-                    {{ road.remarks }}</textarea>
-                  <label for="remarksTextarea">Remarks From Engineer (if any)</label>
-                </div>
-      
-                <!-- File Upload -->
-                <div class="mb-3">
-                  <form class="form-control" action="/upload" method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <label for="formFile" class="form-label">Upload Proofs</label>
-                    <input
-                        class="form-control mb-3"
-                        type="file"
-                        id="formFile"
-                        name="files"
-                        accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp"
-                        multiple
-                        required
-                        aria-label="Upload Project Documents"
-                    >
-                    <button type="submit" class="btn btn-primary" disabled>Upload</button>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-    
+
 
 {% endblock %}
+
 
 {% block extra_js %}
-    <script src="{% static 'contractor.js'%}"></script>
+<!-- {% if messages %}
+    <script>
+        {% for message in messages %}
+            // Trigger alert in JS file with the message content
+            const messageType = '{{ message.tags }}';  // Get message type (success, error, etc.)
+            const messageContent = "{{ message|escapejs }}";   // Get the message content, properly escaped for JavaScript
+
+            // Call a JS function to display the message as an alert box
+            showAlert(messageType, messageContent);
+        {% endfor %}
+    </script>
+{% endif %} -->
+
+<script src="{% static 'contractor.js' %}"></script>
 {% endblock %}
+
+

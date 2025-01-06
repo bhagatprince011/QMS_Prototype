@@ -91,6 +91,10 @@ DATABASES = {
     }
 }
 
+SUPABASE_URL = "https://locvimidtdtjndqpmszp.supabase.co"  # Replace with your Supabase project URL
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxvY3ZpbWlkdGR0am5kcXBtc3pwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzU2Nzc4ODgsImV4cCI6MjA1MTI1Mzg4OH0.yH1zB3kmk7B3qLHTd89xCP_UFzzltR-yK2MNgl3imu4"  # Replace with your service role key
+SUPABASE_BUCKET = "QMS-Bucket"  # Replace with your bucket name
+
 
 
 # Password validation

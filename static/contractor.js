@@ -1,3 +1,4 @@
+// Handle file selection and display file names
 const fileInput = document.getElementById('formFile');
 if (fileInput) {
     fileInput.addEventListener('change', () => {
@@ -7,35 +8,79 @@ if (fileInput) {
     });
 }
 
+// Handle form submission for file upload
+document.getElementById('uploadForm').addEventListener('submit', function(event) {
+    event.preventDefault();  // Prevent the default form submission (page reload)
 
-const form = document.querySelector('form');
-form.addEventListener('submit', (event) => {
-    const files = fileInput.files;
-    const validExtensions = ['pdf', 'jpg', 'jpeg', 'png', 'gif', 'bmp'];
+    // Create a FormData object from the form
+    const formData = new FormData(this);  // 'this' refers to the form element
 
-    for (let file of files) {
-        const extension = file.name.split('.').pop().toLowerCase();
-        if (!validExtensions.includes(extension)) {
-            alert(`Invalid file type: ${file.name}`);
-            event.preventDefault();
-            return;
+    // Use fetch to send the form data via AJAX to the server
+    fetch('/qms_app/upload/', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+        },
+    })
+    .then(response => response.json())  // Parse JSON response from the server
+    .then(data => {
+        if (data.success) {
+            // If success, display success message
+            showAlert('success', 'File uploaded successfully!');
+        } else {
+            // If failure, display error message
+            showAlert('error', 'Failed to upload file!');
         }
-    }
+    })
+    .catch(error => {
+        // Handle any errors in the fetch request
+        showAlert('error', 'An error occurred while uploading the file.');
+    });
 });
 
+// Function to show success or error messages
+function showAlert(type, message) {
+    const alertBox = document.createElement('div');
+    alertBox.classList.add('alert');
+    alertBox.classList.add(type === 'success' ? 'alert-success' : 'alert-danger');
+    alertBox.innerHTML = message;
+
+    document.body.appendChild(alertBox);
+
+    // Auto-close the alert box after 3 seconds
+    setTimeout(() => {
+        alertBox.remove();
+    }, 3000);
+}
+
+// Function to show success or error messages in an alert box
+function showAlert(type, message) {
+    const alertBox = document.createElement('div');
+    alertBox.classList.add('alert');
+    alertBox.classList.add(type === 'success' ? 'alert-success' : 'alert-danger');
+    alertBox.innerHTML = message;
+
+    document.body.appendChild(alertBox);
+
+    // Auto-close the alert box after 3 seconds
+    setTimeout(() => {
+        alertBox.remove();
+    }, 3000);
+}
+
+// Ensure the card heights are consistent
 document.addEventListener("DOMContentLoaded", () => {
     const cards = document.querySelectorAll(".card");
     let maxHeight = 0;
-  
+
     // Find the maximum height of all cards
     cards.forEach(card => {
-      maxHeight = Math.max(maxHeight, card.offsetHeight);
+        maxHeight = Math.max(maxHeight, card.offsetHeight);
     });
-  
+
     // Apply the maximum height to all cards
     cards.forEach(card => {
-      card.style.height = maxHeight + "px";
+        card.style.height = maxHeight + "px";
     });
-  });
-
- 
+});
