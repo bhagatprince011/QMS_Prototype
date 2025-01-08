@@ -79,6 +79,95 @@ document.getElementById("downloadProofsButton").addEventListener("click", functi
 });
 
 
+document.getElementById('remarkOrApprove').addEventListener('submit', function(event) {
+  event.preventDefault(); // Prevent the default form submission (page reload)
 
+ // Show spinner and disable the screen
+  const spinner = document.createElement("div");
+  spinner.id = "spinner";
+  spinner.style.position = "fixed";
+  spinner.style.top = "0";
+  spinner.style.left = "0";
+  spinner.style.width = "100%";
+  spinner.style.height = "100%";
+  spinner.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+  spinner.style.zIndex = "9999";
+  spinner.style.display = "flex";
+  spinner.style.justifyContent = "center";
+  spinner.style.alignItems = "center";
+  spinner.innerHTML = '<div class="spinner-border text-light" role="status"><span class="sr-only">Loading...</span></div>';
+  document.body.appendChild(spinner);
 
+  const messageRadio = document.getElementById('inlineRadio1');
+  const approvalRadio = document.getElementById('inlineRadio2');
 
+  if (messageRadio.checked) {
+      
+      const formData = new FormData(this);
+
+      // Use fetch to send the form data via AJAX to the server
+      fetch('/qms_app/sendRemarks/', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+        },
+      })
+        .then(response => response.json()) // Parse JSON response from the server
+        .then(data => {;
+            if (data.success==true) {
+                // If success, display success message
+                alert(data.message);
+            } else {
+                // If failure, display error message
+                alert('Failed to send message! \n' + data.message);
+            }
+        })
+        .catch(error => {
+            // Handle any errors in the fetch request
+            alert('An error occurred while saving the message.');
+        })
+        .finally(() => {
+            // Remove spinner after upload
+            if (spinner) {
+                document.body.removeChild(spinner);
+                    // Clear the file input and reset the form
+                document.getElementById('remarksTextarea').value = '';
+            }
+        });
+  }
+  else if (approvalRadio.checked) {    
+      const formData = new FormData(this); // 'this' refers to the form element
+
+      // Use fetch to send the form data via AJAX to the server
+      fetch('/qms_app/approve/', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+        },
+      })
+        .then(response => response.json()) // Parse JSON response from the server
+        .then(data => {;
+            if (data.success==true) {
+                // If success, display success message
+                alert(data.message);
+            } else {
+                // If failure, display error message
+                alert('Failed to approve! \n' + data.message);
+            }
+        })
+        .catch(error => {
+            // Handle any errors in the fetch request
+            alert('An error occurred while Approving.');
+        })
+        .finally(() => {
+            // Remove spinner after upload
+            if (spinner) {
+                document.body.removeChild(spinner); 
+                location.reload();                               
+            }
+        });
+  }
+
+});

@@ -59,13 +59,14 @@
                 </div>
                 <!-- File Upload -->
                 <div class="mb-3">
-                    <form class="form-control" action="/upload" method="post" enctype="multipart/form-data">
+                    <form class="form-control" id="remarkOrApprove" method="post">
                         {% csrf_token %}
                         <!-- Remarks -->
                         <div class="form-floating mb-3">
-                            <textarea class="form-control" placeholder="" id="remarksTextarea" style="height: 100px" aria-label="Remarks (if any)">
+                            <textarea class="form-control" placeholder="" id="remarksTextarea" name="remarks" style="height: 100px" aria-label="Remarks (if any)">
                               {{ road.remarks }}</textarea>
                             <label for="remarksTextarea">Message For Contractor (if any)</label>
+                            <input type="hidden" id="road_id" name="road_id" value="{{ road.id }}">
                         </div>
                     
                         <!-- Radio Buttons for Action -->
@@ -82,7 +83,7 @@
                         </div>
                     
                         <!-- Buttons -->
-                        <button type="button" class="btn btn-primary" id="sendButton" disabled>Send</button>
+                        <button type="submit" class="btn btn-primary" id="sendButton" disabled>Send</button>
                         <button type="submit" class="btn btn-success" id="approveButton" disabled>Approve</button>
                     </form>
                 </div>

@@ -147,7 +147,7 @@ def downloadEvidence(request, road_id):
 
     # Get evidence data for the given road_id
     evidenceData = UploadedEvidenceFile()
-    evidenceData = UploadedEvidenceFile.objects.filter(road_id=road_id).first()
+    evidenceData = UploadedEvidenceFile.objects.filter(road_id=road_id).last()
 
     if not evidenceData:
         # Return JSON response with error message
@@ -202,8 +202,45 @@ def upload_file(request):
             file_name = new_file_name
         )
         uploaded_file_record.save()
+        road.isUploadedProof = True
+        road.save()
         print(uploaded_file_record.file_name)
         # Return only success message, without the URL
         return JsonResponse({'success': True, 'message': 'File uploaded successfully!'})
 
     return JsonResponse({'success': False, 'message': 'Invalid request.'})
+
+def sendRemarks(request):
+    if request.method == 'POST':
+        remarks = request.POST.get('remarks')
+        road_id = request.POST.get('road_id')
+        print(remarks)
+        print('road id: ', road_id)
+        try:
+            road = get_object_or_404(Roads, id=road_id)
+            road.engineerMessage = remarks
+            road.save()
+            return JsonResponse({'success': True, 'message': 'Remarks saved successfully!'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': str(e)})
+
+    return JsonResponse({'success': False, 'message': 'Please try again later!.'})
+
+
+def approve(request):
+    if request.method == 'POST':
+        road_id = request.POST.get('road_id')
+        
+        print('road id: ', road_id)
+        try:
+            road = get_object_or_404(Roads, id=road_id)
+            road.isUploadedProof = False
+            road.engineerMessage = None
+            road.milestone = road.milestone.next_milestone
+            
+            road.save()
+            return JsonResponse({'success': True, 'message': 'Approved successfully!'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': str(e)})
+
+    return JsonResponse({'success': False, 'message': 'Please try again later!.'})
