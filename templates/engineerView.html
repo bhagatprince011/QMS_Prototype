@@ -53,10 +53,10 @@
               <div class="card-body">
                 <!-- Download Button -->
                 <div class="d-grid gap-2 mb-3">
-                  <button class="btn btn-outline-primary" type="button" aria-label="Download Project Form">Download Proofs</button>
-                </div>      
-                <!-- Remarks -->              
-      
+                  <input type="hidden" id="road_id" value="{{ road.id }}">
+                  <a href="#" id="downloadProofsButton" class="btn btn-outline-primary">Download Proofs</a>
+                              
+                </div>
                 <!-- File Upload -->
                 <div class="mb-3">
                     <form class="form-control" action="/upload" method="post" enctype="multipart/form-data">

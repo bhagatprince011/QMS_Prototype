@@ -66,6 +66,8 @@
                     <div class="mb-3">
                       <form class="form-control" id="uploadForm" enctype="multipart/form-data">
                         {% csrf_token %}
+                        <input type="hidden" name="road_id" value="{{ road.id }}">
+                        <input type="hidden" name="milestone_id" value="{{ road.milestone.next_milestone }}">
                         <label for="formFile" class="form-label">Upload Proofs</label>
                         <input
                             class="form-control mb-3"

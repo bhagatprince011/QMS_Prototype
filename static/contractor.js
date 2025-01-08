@@ -30,8 +30,8 @@ document.getElementById('uploadForm').addEventListener('submit', function(event)
         },
     })
         .then(response => response.json()) // Parse JSON response from the server
-        .then(data => {
-            if (data.success) {
+        .then(data => { console.log(data);
+            if (data.success==true) {
                 // If success, display success message
                 alert('File uploaded successfully!');
             } else {

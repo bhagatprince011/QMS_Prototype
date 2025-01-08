@@ -110,10 +110,10 @@ class Roads(models.Model):
         return self.name
     
 class UploadedEvidenceFile(models.Model):
-    road = models.ForeignKey(Roads, on_delete=models.CASCADE, related_name="uploaded_files")
-    milestone_name = models.CharField(max_length=255)
-    file_url = models.URLField(max_length=200)
+    road_id = models.ForeignKey(Roads, on_delete=models.CASCADE, related_name="uploaded_files",blank=True, null=True)
+    milestone_id = models.ForeignKey(Milestones, on_delete=models.CASCADE, related_name="uploaded_files",blank=True, null=True)
+    file_name = models.CharField(max_length=200, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.road.name} - {self.milestone_name} - {self.file_url}"
+        return f"{self.road_id} - {self.milestone_id} - {self.file_url}"
 
