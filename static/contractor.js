@@ -54,21 +54,6 @@ function showAlert(type, message) {
     }, 3000);
 }
 
-// Function to show success or error messages in an alert box
-function showAlert(type, message) {
-    const alertBox = document.createElement('div');
-    alertBox.classList.add('alert');
-    alertBox.classList.add(type === 'success' ? 'alert-success' : 'alert-danger');
-    alertBox.innerHTML = message;
-
-    document.body.appendChild(alertBox);
-
-    // Auto-close the alert box after 3 seconds
-    setTimeout(() => {
-        alertBox.remove();
-    }, 3000);
-}
-
 // Ensure the card heights are consistent
 document.addEventListener("DOMContentLoaded", () => {
     const cards = document.querySelectorAll(".card");
