@@ -1,12 +1,3 @@
-// Handle file selection and display file names
-const fileInput = document.getElementById('formFile');
-if (fileInput) {
-    fileInput.addEventListener('change', () => {
-        const fileList = fileInput.files;
-        const fileNames = Array.from(fileList).map(file => file.name);
-        alert(`Selected files: \n${fileNames.join('\n')}`);
-    });
-}
 
 // Handle form submission for file upload
 document.getElementById('uploadForm').addEventListener('submit', function(event) {
@@ -40,21 +31,6 @@ document.getElementById('uploadForm').addEventListener('submit', function(event)
 });
 
 // Function to show success or error messages
-function showAlert(type, message) {
-    const alertBox = document.createElement('div');
-    alertBox.classList.add('alert');
-    alertBox.classList.add(type === 'success' ? 'alert-success' : 'alert-danger');
-    alertBox.innerHTML = message;
-
-    document.body.appendChild(alertBox);
-
-    // Auto-close the alert box after 3 seconds
-    setTimeout(() => {
-        alertBox.remove();
-    }, 3000);
-}
-
-// Function to show success or error messages in an alert box
 function showAlert(type, message) {
     const alertBox = document.createElement('div');
     alertBox.classList.add('alert');
