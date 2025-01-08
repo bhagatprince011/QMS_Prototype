@@ -1,12 +1,3 @@
-// Handle file selection and display file names
-const fileInput = document.getElementById('formFile');
-if (fileInput) {
-    fileInput.addEventListener('change', () => {
-        const fileList = fileInput.files;
-        const fileNames = Array.from(fileList).map(file => file.name);
-        alert(`Selected files: \n${fileNames.join('\n')}`);
-    });
-}
 
 // Handle form submission for file upload
 document.getElementById('uploadForm').addEventListener('submit', function(event) {
