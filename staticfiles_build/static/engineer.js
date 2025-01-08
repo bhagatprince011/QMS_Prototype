@@ -35,7 +35,7 @@ document.getElementById("downloadProofsButton").addEventListener("click", functi
   event.preventDefault();  // Prevent default anchor behavior (no page reload)
 
   const roadId = document.getElementById('road_id').value  // Assuming you have the road ID available in the template
-  console.log(roadId);
+  
   // Perform a fetch request to the downloadEvidence view
   fetch(`/qms_app/download-evidence/${roadId}/`)
   .then(response => {
