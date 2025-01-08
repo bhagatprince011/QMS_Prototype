@@ -1,10 +1,14 @@
 # In your_app/views.py
 
+import datetime
 import io
 import os
+import re
 from django.http import FileResponse, Http404, HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404, render
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
+import requests
 from qms_app.models import *
 from django.views.decorators.csrf import csrf_exempt
 from supabase import create_client
@@ -69,6 +73,9 @@ def contractor(request, road_id):
 
 def engineer(request, road_id):
     road = get_object_or_404(Roads, id=road_id)
+    message = request.session.get('message', None)
+    
+    
     print(road)
     milestones = [
         {"id": 11, "name": "M1"},
@@ -83,8 +90,13 @@ def engineer(request, road_id):
         {"id": 2, "name": "M10"},
         {"id": 1, "name": "M11"},
     ]
-
-    return render(request, 'engineerView.html', {'road': road, 'milestones': milestones})
+    params = {
+        'road': road,
+        'milestones': milestones,
+        'fileErrorMessage': message 
+    }
+    request.session['message'] = None
+    return render(request, 'engineerView.html', params)
 
 def administrator(request, road_id):
     road = get_object_or_404(Roads, id=road_id)
@@ -105,24 +117,6 @@ def administrator(request, road_id):
 
     return render(request, 'administratorView.html', {'road': road, 'milestones': milestones})
 
-# # Handle file upload
-# def upload_file(request):
-#     if request.method == 'POST' and request.FILES.getlist('files'):
-#         for file in request.FILES.getlist('files'):
-#             UploadedFile.objects.create(file=file)
-#         return redirect('contractor_view')  # Adjust to your contractor view URL name
-#     return render(request, 'contractorView.html')
-
-# # Handle file download
-# def download_sample_file(request):
-#     file_path = 'path/to/sample/file.pdf'  # Replace with your actual file path
-#     return FileResponse(open(file_path, 'rb'), as_attachment=True)
-
-# def get_public_url(bucket_name, file_name):
-#     response = supabase.storage.from_(bucket_name).get_public_url(file_name)
-#     if response.error:
-#         raise Exception(f"Error generating public URL: {response.error.message}")
-#     return response.public_url
 
 
 def download_sample(request):
@@ -148,24 +142,105 @@ def download_sample(request):
     return response
 
 
+def downloadEvidence(request, road_id):
+    storage = SupabaseStorage()
+
+    # Get evidence data for the given road_id
+    evidenceData = UploadedEvidenceFile()
+    evidenceData = UploadedEvidenceFile.objects.filter(road_id=road_id).last()
+
+    if not evidenceData:
+        # Return JSON response with error message
+        return JsonResponse({'success': False, 'message': 'No evidence found.'})
+
+    file_name = evidenceData.file_name
+    try:
+        # Request the file from the public URL
+        file_content = storage.client.storage.from_(storage.bucket_name).download(file_name)
+
+        if not file_content:
+            return JsonResponse({'success': False, 'message': 'Error downloading the file.'})
+
+        # Return the file as a response (using FileResponse for proper handling)
+        response = FileResponse(io.BytesIO(file_content), as_attachment=True, filename=file_name)
+        return response
+
+    except Exception as e:
+        # If an error occurs, return the exception message
+        return JsonResponse({'success': False, 'message': str(e)})
+
+
 @csrf_exempt
 def upload_file(request):
     if request.method == 'POST' and request.FILES:
         # Get the uploaded file
         uploaded_file = request.FILES['files']  # Use 'files' to match the form input name
+        road_id = request.POST.get('road_id')
+        road = get_object_or_404(Roads, id=road_id)
 
-        # Get the file name
-        file_name = uploaded_file.name
+        # Get the original file name and extension
+        original_file_name, file_extension = os.path.splitext(uploaded_file.name)
 
+        # Generate a new file name with the current timestamp
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d, %H:%M:%S")
+        
+        new_file_name = f"{original_file_name}_{timestamp}{file_extension}"
+        
         # Initialize Supabase storage client
         storage = SupabaseStorage()
 
         # Upload the file to Supabase storage
-        response = storage.upload_file(uploaded_file, file_name)
+        response = storage.upload_file(uploaded_file, new_file_name)
 
         if response.get('error'):
             return JsonResponse({'success': False, 'message': 'Failed to upload file.'})
-        else:
-            return JsonResponse({'success': True, 'message': 'File uploaded successfully.'})
-    
+
+        # Save the file URL to the model
+        uploaded_file_record = UploadedEvidenceFile(
+            road_id=road,
+            milestone_id=road.milestone.next_milestone,
+            file_name = new_file_name
+        )
+        uploaded_file_record.save()
+        road.isUploadedProof = True
+        road.save()
+        print(uploaded_file_record.file_name)
+        # Return only success message, without the URL
+        return JsonResponse({'success': True, 'message': 'File uploaded successfully!'})
+
     return JsonResponse({'success': False, 'message': 'Invalid request.'})
+
+def sendRemarks(request):
+    if request.method == 'POST':
+        remarks = request.POST.get('remarks')
+        road_id = request.POST.get('road_id')
+        print(remarks)
+        print('road id: ', road_id)
+        try:
+            road = get_object_or_404(Roads, id=road_id)
+            road.engineerMessage = remarks
+            road.save()
+            return JsonResponse({'success': True, 'message': 'Remarks saved successfully!'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': str(e)})
+
+    return JsonResponse({'success': False, 'message': 'Please try again later!.'})
+
+
+def approve(request):
+    if request.method == 'POST':
+        road_id = request.POST.get('road_id')
+        
+        print('road id: ', road_id)
+        try:
+            road = get_object_or_404(Roads, id=road_id)
+            road.isUploadedProof = False
+            road.engineerMessage = None
+            road.milestone = road.milestone.next_milestone
+            
+            road.save()
+            return JsonResponse({'success': True, 'message': 'Approved successfully!'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': str(e)})
+
+    return JsonResponse({'success': False, 'message': 'Please try again later!.'})

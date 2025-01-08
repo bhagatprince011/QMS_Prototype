@@ -12,6 +12,9 @@ urlpatterns = [
     path('administrator/<int:road_id>/', views.administrator, name='administrator'),
     path('upload/', views.upload_file, name='upload_file'),
     path("download-sample/", views.download_sample, name="download_sample"),
+    path('download-evidence/<int:road_id>/', views.downloadEvidence, name='download_evidence'),
+    path('sendRemarks/', views.sendRemarks, name='sendRemarks'),
+    path('approve/', views.approve, name='approve'),
     
 ]
 

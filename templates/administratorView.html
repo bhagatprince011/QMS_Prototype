@@ -53,18 +53,19 @@
               <div class="card-body">
                 <!-- Download Button -->
                 <div class="d-grid gap-2 mb-3">
-                  <button class="btn btn-outline-primary" type="button" aria-label="Download Project Form">Download Proofs</button>
+                  <input type="hidden" id="road_id" value="{{ road.id }}">
+                  <a href="#" id="downloadProofsButton" class="btn btn-outline-primary">Download Proofs</a>
                 </div>      
                 <!-- Remarks -->              
       
                 <!-- File Upload -->
                 <div class="mb-3">
-                    <form class="form-control" action="/upload" method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
+                  <form class="form-control" id="adminForm" method="post">
+                    {% csrf_token %}
                         <!-- Remarks -->
                         <div class="form-floating mb-3">
                             <textarea class="form-control" placeholder="" id="remarksTextarea" style="height: 100px" disabled aria-label="Remarks (if any)">
-                                {{ road.remarks }}</textarea>
+                                {{ road.engineerMessage }}</textarea>
                               <label for="remarksTextarea">Remarks From Engineer (if any)</label>
                         </div>
                         <!-- Buttons -->                        
@@ -82,5 +83,5 @@
 {% endblock %}
 
 {% block extra_js %}
-    <script src="{% static 'engineer.js'%}"></script>
+    <script src="{% static 'administrator.js'%}"></script>
 {% endblock %}

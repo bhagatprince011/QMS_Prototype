@@ -38,18 +38,15 @@ class SupabaseStorage:
             print("Error during upload:", str(e))
             return {"error": str(e)}
 
-
-
-
     def get_file_url(self, file_name):
         """
         Gets the public URL of a file in the bucket.
 
         :param file_name: The file name in the bucket
-        :return: Public URL of the file
+        :return: A dictionary containing the public URL or an error message
         """
         try:
-            response = self.client.storage.from_(self.bucket_name).get_public_url(file_name)
-            return response.get("publicUrl")
+            public_url = self.client.storage.from_(self.bucket_name).get_public_url(file_name)
+            return {"publicUrl": public_url}
         except Exception as e:
             return {"error": str(e)}
