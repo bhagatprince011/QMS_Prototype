@@ -95,7 +95,9 @@ class Roads(models.Model):
     road_type = models.ForeignKey(RoadTypes, on_delete=models.CASCADE, related_name="roads")
     contractor = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="contracted_roads")
     engineer = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="engineered_roads")
-    milestone = models.ForeignKey(Milestones, on_delete=models.CASCADE, related_name="roads")
+    milestone = models.ForeignKey(Milestones, on_delete=models.CASCADE, related_name="roads",null=True, blank=True)
+    isUploadedProof = models.BooleanField(default=False)
+    engineerMessage = models.TextField(blank=True, null=True)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
 
@@ -106,3 +108,12 @@ class Roads(models.Model):
 
     def __str__(self):
         return self.name
+    
+class UploadedEvidenceFile(models.Model):
+    road = models.ForeignKey(Roads, on_delete=models.CASCADE, related_name="uploaded_files")
+    milestone_name = models.CharField(max_length=255)
+    file_url = models.URLField(max_length=200)
+
+    def __str__(self):
+        return f"{self.road.name} - {self.milestone_name} - {self.file_url}"
+

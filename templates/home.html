@@ -14,7 +14,7 @@
     {% if user_roads %}
         <p>Showing roads for role: <strong>{{ role }}</strong><strong>( {{name}} )</strong></p>
         <div class="table-responsive">
-            <table class="table table-success table-striped-columns">
+            <table class="table table-success table-hover">
                 <thead>
                     <tr>
                         <th scope="col">Sr. No.</th>
@@ -29,17 +29,26 @@
                 </thead>
                 <tbody>
                     {% for road in user_roads %}
-                    <tr>
-                        <td>{{ forloop.counter }}</td> <!-- Serial Number -->
+                    <tr 
+                        {% if role == 'Contractor' %}
+                        onclick="window.location.href=`{% url 'contractor' road.id %}`"
+                        {% elif role == 'Engineer' %}
+                        onclick="window.location.href=`{% url 'engineer' road.id %}`"
+                        {% elif role == 'Administrator' %}
+                        onclick="window.location.href=`{% url 'administrator' road.id %}`"
+                        {% endif %}
+                        style="cursor: pointer;">
+                        <td>{{ forloop.counter }}</td>
                         <td>{{ road.name }}</td>
                         <td>{{ road.source }}</td>
                         <td>{{ road.destination }}</td>
-                        <td>{% if road.road_type %}{{ road.road_type.name }}{% else %}N/A{% endif %}</td>
-                        <td>{% if road.milestone %}{{ road.milestone.name }}{% else %}N/A{% endif %}</td>
+                        <td>{{ road.road_type.name }}</td>
+                        <td>{{ road.milestone.name }}</td>
                         <td>{{ road.contractor.first_name }} {{ road.contractor.last_name }}</td>
                         <td>{{ road.engineer.first_name }} {{ road.engineer.last_name }}</td>
                     </tr>
                     {% endfor %}
+
                 </tbody>
             </table>
         </div>
