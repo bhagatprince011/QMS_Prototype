@@ -17,6 +17,10 @@ def login_page(request):
     else:
         if request.method == 'POST':
             role = request.POST.get('role')
+            roleValue = request.session.get('role', None)
+            if role is None:
+                role = roleValue               
+            
             username = request.POST.get('username')
             password = request.POST.get('password')
             #print(role)
@@ -25,8 +29,9 @@ def login_page(request):
                 login(request, user)
                 request.session['authenticated'] = True
                 # Use reverse() and format the URL with the role parameter
-                home_url = f"{reverse('home')}?role={role}"
-                return redirect(home_url)
+                request.session['role'] = role
+                
+                return redirect('home')
             else:
                 messages.error(request, 'Invalid username or password.')
                     
@@ -39,3 +44,9 @@ def logout_page(request):
     logout(request)  # Log out the user
     request.session['authenticated'] = False
     return redirect('login')  # Redirect to login page after logout
+
+def global_role_value(request, role):
+
+    return {
+        'role': role  # Replace with your desired key-value pair
+    }
