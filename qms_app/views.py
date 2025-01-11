@@ -19,29 +19,28 @@ from django.contrib import messages
 
 
 
-
 @login_required(login_url='login')  # Ensures only authenticated users can access
 def home(request):
     # Retrieve the role parameter from the query string
-    role = request.GET.get('role')
-    print('User role:', role)
-
+    rolevalue = request.session.get('role', None)
+    
+    
     username = request.user.username
     name = request.user.first_name + ' ' + request.user.last_name
 
    # Determine roads based on the role
-    if role == 'Contractor':
+    if rolevalue == 'Contractor':
         user_roads = Roads.objects.filter(contractor_id=request.user.id)
-    elif role == 'Engineer':
+    elif rolevalue == 'Engineer':
         user_roads = Roads.objects.filter(engineer_id=request.user.id)
-    elif role == 'Administrator':
+    elif rolevalue == 'Administrator':
         user_roads = Roads.objects.all()
     else:
         user_roads = []  # Default to an empty list if the role is invalid or not provided
 
     # Prepare context for the template
     params = {
-        'role': role,
+        'role': rolevalue,
         'name': name,
         'user_roads': user_roads,  # Pass the roads to the template
     }
@@ -52,6 +51,7 @@ def home(request):
 @login_required(login_url='login')
 def contractor(request, road_id):
     road = get_object_or_404(Roads, id=road_id)
+
     print(road)
     milestones = [
         {"id": 11, "name": "M1"},
