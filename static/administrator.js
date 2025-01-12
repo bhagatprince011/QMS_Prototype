@@ -19,6 +19,7 @@ document.getElementById("downloadProofsButton").addEventListener("click", functi
     event.preventDefault();  // Prevent default anchor behavior (no page reload)
   
     const roadId = document.getElementById('road_id').value  // Assuming you have the road ID available in the template
+    startSpinner(); // Show spinner while downloading file
     
     // Perform a fetch request to the downloadEvidence view
     fetch(`/qms_app/download-evidence/${roadId}/`)
@@ -55,6 +56,10 @@ document.getElementById("downloadProofsButton").addEventListener("click", functi
                 a.click();
                 window.URL.revokeObjectURL(url);
             });
+            spinner = document.getElementById('spinner');
+            if (spinner) {
+                stopSpinner();
+            }
         }
     })
     .catch(error => {

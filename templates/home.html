@@ -4,56 +4,56 @@
 
 {% block content %}
 
+
     <div class="text-center">
-        <h2>Welcome{% if name %}, {{ name }}{% endif %}!</h2>
+        <h2>Welcome, {{ name }}!</h2>
         <p>This is your home content!</p>
     </div>
 
     <h2>Roads List</h2>
+    <p>Showing roads for role: <strong>Administrator </strong><strong>( {{name}} )</strong></p>
 
-    {% if user_roads %}
-        <p>Showing roads for role: <strong>{{ role }}</strong><strong>( {{name}} )</strong></p>
-        <div class="table-responsive">
+    <!-- Filter Table -->
+    <div class="table-responsive">
+        <form method="get" action="{% url 'home' %}">
             <table class="table table-success table-hover">
                 <thead>
                     <tr>
-                        <th scope="col">Sr. No.</th>
-                        <th scope="col">Road Name</th>
-                        <th scope="col">Source</th>
-                        <th scope="col">Destination</th>
-                        <th scope="col">Road Type</th>
-                        <th scope="col">Milestone</th>
-                        <th scope="col">Contractor</th>
-                        <th scope="col">Engineer</th>
+                        <th scope="col">Sr.No</th>
+                        <th scope="col"><input type="search" class="form-control" name="road_name" placeholder="Road Name"></th>
+                        <th scope="col"><input type="search" class="form-control" name="source" placeholder="Source"></th>
+                        <th scope="col"><input type="search" class="form-control" name="destination" placeholder="Destination"></th>
+                        <th scope="col"><input type="search" class="form-control" name="road_type" placeholder="Road Type"></th>
+                        <th scope="col"><input type="search" class="form-control" name="milestone" placeholder="Milestone"></th>
+                        <th scope="col"><input type="search" class="form-control" name="contractor" placeholder="Contractor"></th>
+                        <th scope="col"><input type="search" class="form-control" name="engineer" placeholder="Engineer"></th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for road in user_roads %}
-                    <tr 
-                        {% if role == 'Contractor' %}
-                        onclick="window.location.href=`{% url 'contractor' road.id %}`"
-                        {% elif role == 'Engineer' %}
-                        onclick="window.location.href=`{% url 'engineer' road.id %}`"
-                        {% elif role == 'Administrator' %}
-                        onclick="window.location.href=`{% url 'administrator' road.id %}`"
-                        {% endif %}
-                        style="cursor: pointer;">
-                        <td>{{ forloop.counter }}</td>
-                        <td>{{ road.name }}</td>
-                        <td>{{ road.source }}</td>
-                        <td>{{ road.destination }}</td>
-                        <td>{{ road.road_type.name }}</td>
-                        <td>{{ road.milestone.name }}</td>
-                        <td>{{ road.contractor.first_name }} {{ road.contractor.last_name }}</td>
-                        <td>{{ road.engineer.first_name }} {{ road.engineer.last_name }}</td>
-                    </tr>
+                        <tr onclick="window.location.href=`/qms_app/administrator/{{ road.id }}/`" style="cursor: pointer;">
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ road.name }}</td>
+                            <td>{{ road.source }}</td>
+                            <td>{{ road.destination }}</td>
+                            <td>{{ road.road_type }}</td>
+                            <td>{{ road.milestone }}</td>
+                            <td>{{ road.contractor }}</td>
+                            <td>{{ road.engineer }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="8" class="text-center">No roads found.</td>
+                        </tr>
                     {% endfor %}
-
                 </tbody>
             </table>
-        </div>
-        
-    {% else %}
-        <p>No roads available for your role{% if role %}: <strong>{{ role }}</strong>{% endif %}.</p>
-    {% endif %}
+            <button type="submit" class="btn btn-primary">Apply Filters</button>
+            &nbsp;
+            <a href="{% url 'home' %}" class="btn btn-outline-danger">Clear Filters</a>
+        </form>
+    </div>
+
+    
+
 {% endblock %}

@@ -33,6 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 document.getElementById("downloadProofsButton").addEventListener("click", function (event) {
   event.preventDefault();  // Prevent default anchor behavior (no page reload)
+  startSpinner(); // Show spinner while downloading file
 
   const roadId = document.getElementById('road_id').value  // Assuming you have the road ID available in the template
   
@@ -71,6 +72,10 @@ document.getElementById("downloadProofsButton").addEventListener("click", functi
               a.click();
               window.URL.revokeObjectURL(url);
           });
+            spinner = document.getElementById('spinner');
+            if (spinner) {
+                document.body.removeChild(spinner);
+            }
       }
   })
   .catch(error => {
@@ -83,20 +88,7 @@ document.getElementById('remarkOrApprove').addEventListener('submit', function(e
   event.preventDefault(); // Prevent the default form submission (page reload)
 
  // Show spinner and disable the screen
-  const spinner = document.createElement("div");
-  spinner.id = "spinner";
-  spinner.style.position = "fixed";
-  spinner.style.top = "0";
-  spinner.style.left = "0";
-  spinner.style.width = "100%";
-  spinner.style.height = "100%";
-  spinner.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
-  spinner.style.zIndex = "9999";
-  spinner.style.display = "flex";
-  spinner.style.justifyContent = "center";
-  spinner.style.alignItems = "center";
-  spinner.innerHTML = '<div class="spinner-border text-light" role="status"><span class="sr-only">Loading...</span></div>';
-  document.body.appendChild(spinner);
+  startSpinner();
 
   const messageRadio = document.getElementById('inlineRadio1');
   const approvalRadio = document.getElementById('inlineRadio2');
@@ -129,6 +121,7 @@ document.getElementById('remarkOrApprove').addEventListener('submit', function(e
         })
         .finally(() => {
             // Remove spinner after upload
+            spinner = document.getElementById('spinner');
             if (spinner) {
                 document.body.removeChild(spinner);
                     // Clear the file input and reset the form
