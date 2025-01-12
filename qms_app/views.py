@@ -23,8 +23,17 @@ from django.contrib import messages
 @login_required(login_url='login')
 def home(request):
     # Role-based filtering
-    rolevalue = request.session.get('role', None)
-    user_roads = Roads.objects.all()  # Adjust per role logic
+    rolevalue = request.session.get('role', '').lower()  # Convert role to lowercase
+    user_roads = Roads.objects.none()  # Default to an empty QuerySet
+    user = request.user
+
+    # Fetch roads based on role
+    if rolevalue == 'contractor':
+        user_roads = Roads.objects.filter(contractor_id=request.user.id)
+    elif rolevalue == 'engineer':
+        user_roads = Roads.objects.filter(engineer_id=request.user.id)
+    elif rolevalue == 'administrator':
+        user_roads = Roads.objects.all()
 
     # Filters mapping
     filters = {
