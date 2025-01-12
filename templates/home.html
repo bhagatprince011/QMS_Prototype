@@ -11,7 +11,7 @@
     </div>
 
     <h2>Roads List</h2>
-    <p>Showing roads for role: <strong>Administrator </strong><strong>( {{name}} )</strong></p>
+    <p>Showing roads for role: <strong>{{role}} </strong><strong>( {{name}} )</strong></p>
 
     <!-- Filter Table -->
     <div class="table-responsive">
@@ -31,7 +31,7 @@
                 </thead>
                 <tbody>
                     {% for road in user_roads %}
-                        <tr onclick="window.location.href=`/qms_app/administrator/{{ road.id }}/`" style="cursor: pointer;">
+                        <tr onclick="window.location.href=`/qms_app/{{role}}/{{ road.id }}/`" style="cursor: pointer;">
                             <td>{{ forloop.counter }}</td>
                             <td>{{ road.name }}</td>
                             <td>{{ road.source }}</td>
