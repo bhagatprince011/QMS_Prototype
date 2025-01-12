@@ -19,33 +19,39 @@ from django.contrib import messages
 
 
 
-@login_required(login_url='login')  # Ensures only authenticated users can access
+
+@login_required(login_url='login')
 def home(request):
-    # Retrieve the role parameter from the query string
+    # Role-based filtering
     rolevalue = request.session.get('role', None)
-    
-    
-    username = request.user.username
-    name = request.user.first_name + ' ' + request.user.last_name
+    user_roads = Roads.objects.all()  # Adjust per role logic
 
-   # Determine roads based on the role
-    if rolevalue == 'Contractor':
-        user_roads = Roads.objects.filter(contractor_id=request.user.id)
-    elif rolevalue == 'Engineer':
-        user_roads = Roads.objects.filter(engineer_id=request.user.id)
-    elif rolevalue == 'Administrator':
-        user_roads = Roads.objects.all()
-    else:
-        user_roads = []  # Default to an empty list if the role is invalid or not provided
-
-    # Prepare context for the template
-    params = {
-        'role': rolevalue,
-        'name': name,
-        'user_roads': user_roads,  # Pass the roads to the template
+    # Filters mapping
+    filters = {
+        'name__icontains': request.GET.get('road_name', '').strip(),
+        'source__icontains': request.GET.get('source', '').strip(),
+        'destination__icontains': request.GET.get('destination', '').strip(),
+        'road_type__name__icontains': request.GET.get('road_type', '').strip(),
+        'milestone__name__icontains': request.GET.get('milestone', '').strip(),
+        'contractor__first_name__icontains': request.GET.get('contractor', '').split(' ')[0].strip(),
+        'engineer__first_name__icontains': request.GET.get('engineer', '').split(' ')[0].strip(),
     }
 
-    return render(request, 'home.html', params)
+    # Remove any filters with empty values
+    filters = {key: value for key, value in filters.items() if value}
+
+    # Apply filters to the queryset
+    user_roads = user_roads.filter(**filters)
+
+    context = {
+        'role': rolevalue,
+        'name': f"{request.user.first_name} {request.user.last_name}",
+        'user_roads': user_roads,
+    }
+    return render(request, 'home.html', context)
+
+
+
 
 
 @login_required(login_url='login')
@@ -244,3 +250,31 @@ def approve(request):
             return JsonResponse({'success': False, 'message': str(e)})
 
     return JsonResponse({'success': False, 'message': 'Please try again later!.'})
+
+# def apply_filters(filter_type, search_value, user_roads):
+    
+#     if not filter_type or not search_value:
+#         return user_roads  # No filtering if no valid parameters
+
+#     search_value = search_value.strip()
+
+#     if filter_type == 'Engineer':
+#         first_name = search_value.split(' ')[0]  # Handle first name only
+#         engineer = Users.objects.filter(first_name__iexact=first_name).first()
+#         if engineer:
+#             return user_roads.filter(engineer_id=engineer.id)
+#     elif filter_type == 'Contractor':
+#         first_name = search_value.split(' ')[0]  # Handle first name only
+#         contractor = Users.objects.filter(first_name__iexact=first_name).first()
+#         if contractor:
+#             return user_roads.filter(contractor_id=contractor.id)
+#     elif filter_type == 'Source':
+#         return user_roads.filter(source__iexact=search_value)
+#     elif filter_type == 'Destination':
+#         return user_roads.filter(destination__iexact=search_value)
+
+#     return user_roads.none()  # Return an empty queryset for unsupported filters
+
+
+
+
