@@ -4,13 +4,12 @@
 {% block title %}Road{% endblock %}
 
 {% block content %}
-
-<div class="container mb-5 p-5">
-    <div class="arrow-container">
+<div class="container mb-5 p-3">
+    <div class="arrow-container justify-content-center gap-2">
         {% for milestone in milestones %}
             <div 
                 class="arrow 
-                    {% if milestone.id == 11 and road.milestone.id == none %}bg-warning
+                    {% if milestone.id == 11 and not road.milestone %}bg-warning
                     {% elif milestone.id > road.milestone.id %}bg-success
                     {% elif milestone.id == road.milestone.id %}bg-success
                     {% elif milestone.id == road.milestone.id|add:'-1' %}bg-warning
@@ -21,13 +20,13 @@
     </div>
 </div>
 
-<div class="container mt-5 p-3">
-    <div class="row d-flex align-items-stretch">
+<div class="container mt-5">
+    <div class="row g-3">
         <!-- Left Column: Road Details -->
-        <div class="col-sm-6 mb-3 mb-sm-0">
-            <div class="card h-100">
+        <div class="col-md-6">
+            <div class="card">
                 <div class="card-body">
-                    <h2 class="card-title mb-5 text-primary">{{ road.name }}</h2>
+                    <h2 class="card-title mb-4 text-primary">{{ road.name }}</h2>
                     <p><strong>Road Type:</strong> <span class="badge bg-primary">{{ road.road_type.name }}</span></p>
                     <p>
                         <strong>Source &rarr; Destination:</strong> 
@@ -45,70 +44,53 @@
                 </div>
             </div>
         </div>
-    
+
         <!-- Right Column: Interactive Options -->
-        <div class="col-sm-6">
-            <div class="card h-100">
+        <div class="col-md-6">
+            <div class="card">
                 <div class="card-body">
                     <!-- Download Button -->
                     <div class="d-grid gap-2 mb-3">
-                      <a href="{% url 'download_sample' %}" class="btn btn-outline-primary" aria-label="Download Project Form">Download Sample</a>
+                        <a href="{% url 'download_sample' %}" class="btn btn-outline-primary" aria-label="Download Project Form">Download Sample</a>
                     </div>
-        
+
                     <!-- Remarks -->
                     <div class="form-floating mb-3">
-                        <textarea class="form-control" placeholder="" id="remarksTextarea" style="height: 100px" disabled aria-label="Remarks (if any)">
-                            {{ road.engineerMessage }}</textarea>
+                        <textarea 
+                            class="form-control" 
+                            placeholder="No remarks available" 
+                            id="remarksTextarea" 
+                            style="height: 100px" 
+                            disabled 
+                            aria-label="Remarks (if any)">
+                            {{ road.engineerMessage|default:"No remarks available." }}
+                        </textarea>
                         <label for="remarksTextarea">Remarks From Engineer (if any)</label>
                     </div>
-        
+
                     <!-- File Upload -->
-                    <div class="mb-3">
-                      <form class="form-control" id="uploadForm" enctype="multipart/form-data">
+                    <form id="uploadForm" enctype="multipart/form-data" method="post">
                         {% csrf_token %}
                         <input type="hidden" name="road_id" value="{{ road.id }}">
                         <input type="hidden" name="milestone_id" value="{{ road.milestone.next_milestone }}">
                         <label for="formFile" class="form-label">Upload Proofs</label>
-                        <input
-                            class="form-control mb-3"
-                            type="file"
-                            id="formFile"
-                            name="files"  
-                            accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp"
-                            multiple
-                            required
-                            aria-label="Upload Project Documents"
-                        >
-                        <button id="uploadButton" type="submit" class="btn btn-primary">Upload</button>
-                      </form>                    
-                    
-                    </div>
+                        <input 
+                            class="form-control mb-3" 
+                            type="file" 
+                            id="formFile" 
+                            name="files" 
+                            accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp" 
+                            multiple 
+                            required 
+                            aria-label="Upload Project Documents">
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-
-
 {% endblock %}
-
 
 {% block extra_js %}
-<!-- {% if messages %}
-    <script>
-        {% for message in messages %}
-            // Trigger alert in JS file with the message content
-            const messageType = '{{ message.tags }}';  // Get message type (success, error, etc.)
-            const messageContent = "{{ message|escapejs }}";   // Get the message content, properly escaped for JavaScript
-
-            // Call a JS function to display the message as an alert box
-            showAlert(messageType, messageContent);
-        {% endfor %}
-    </script>
-{% endif %} -->
-
 <script src="{% static 'contractor.js' %}"></script>
 {% endblock %}
-
-
