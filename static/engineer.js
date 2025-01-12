@@ -49,6 +49,7 @@ document.getElementById("downloadProofsButton").addEventListener("click", functi
               } else {
                   alert(data.message); // Show the error message
               }
+
           });
       } else {
           // Handle binary file response
@@ -71,16 +72,19 @@ document.getElementById("downloadProofsButton").addEventListener("click", functi
               document.body.appendChild(a);
               a.click();
               window.URL.revokeObjectURL(url);
-          });
-            spinner = document.getElementById('spinner');
-            if (spinner) {
-                document.body.removeChild(spinner);
-            }
+          });            
       }
   })
   .catch(error => {
       alert("An error occurred: " + error.message); // Show error for network issues
-  });
+  })
+  .finally(() => {
+    // Remove spinner after upload
+        spinner = document.getElementById('spinner');
+        if (spinner) {
+            document.body.removeChild(spinner);
+        }
+    });
 });
 
 
